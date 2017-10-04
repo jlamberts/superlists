@@ -12,6 +12,11 @@ class NewVisitorTest(unittest.TestCase):
 	def tearDown(self):
 		self.browser.quit()
 
+	def check_for_row_in_list_table(self, row_text):
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn(row_text, [row.text for row in rows])
+
 	def test_can_start_a_list_and_retrieve_it_later(self):
 
 		#I go to my todo list to add a new item
@@ -34,10 +39,7 @@ class NewVisitorTest(unittest.TestCase):
 		# I hit enter, and the page updates.  The list now contains "Work on homework" as its first item
 		inputbox.send_keys(Keys.ENTER)
 		time.sleep(1)
-
-		table = self.browser.find_element_by_id('id_list_table')
-		rows = table.find_elements_by_tag_name('tr')
-		self.assertIn('1: Work on homework', [row.text for row in rows])
+		self.check_for_row_in_list_table("1: Work on homework")
 
 		
 		# There's still a text box, and I enter "Clean Room"
@@ -48,10 +50,8 @@ class NewVisitorTest(unittest.TestCase):
 
 
 		# The page updates and shows both items
-		table = self.browser.find_element_by_id('id_list_table')
-		rows = table.find_elements_by_tag_name('tr')
-		self.assertIn('1: Work on homework', [row.text for row in rows])
-		self.assertIn('2: Clean Room', [row.text for row in rows])
+		self.check_for_row_in_list_table('1: Work on homework')
+		self.check_for_row_in_list_table('2: Clean Room')
 
 		# I wonder whether this will store my list.  I then notice some text explaining that the page 
 		# has generated a unique URL to store my list
