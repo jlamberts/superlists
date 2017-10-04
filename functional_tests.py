@@ -37,20 +37,26 @@ class NewVisitorTest(unittest.TestCase):
 
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_elements_by_tag_name('tr')
-		self.assertTrue(
-			any(row.text == '1: Work on homework' for row in rows),
-			"New todo item did not appear in table"
-			)
+		self.assertIn('1: Work on homework', [row.text for row in rows])
 
 		
 		# There's still a text box, and I enter "Clean Room"
-		self.fail('Finish the test!')
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Clean Room')
+		inputbox.send_keys(Keys.ENTER)
+		time.sleep(1)
+
 
 		# The page updates and shows both items
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn('1: Work on homework', [row.text for row in rows])
+		self.assertIn('2: Clean Room', [row.text for row in rows])
 
 		# I wonder whether this will store my list.  I then notice some text explaining that the page 
 		# has generated a unique URL to store my list
 
+		self.fail('Finish the test!')
 		# I visit that URL and see my list
 
 		# I go do other stuff
